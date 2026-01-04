@@ -1,0 +1,368 @@
+{
+  "monsters": {
+    "7f8ec2ecc9a2a4d2dcf7158221832866": {
+      "name": "Cultist",
+      "source": "wotc-srd",
+      "source_title": "5e Core Rules",
+      "raw_data": {
+        "slug": "cultist",
+        "desc": "**Cultists** swear allegiance to dark powers such as elemental princes, demon lords, or archdevils. Most conceal their loyalties to avoid being ostracized, imprisoned, or executed for their beliefs. Unlike evil acolytes, cultists often show signs of insanity in their beliefs and practices.",
+        "name": "Cultist",
+        "size": "Medium",
+        "type": "Humanoid",
+        "subtype": "any race",
+        "group": "NPCs",
+        "alignment": "any non-good alignment",
+        "armor_class": 12,
+        "armor_desc": "leather armor",
+        "hit_points": 9,
+        "hit_dice": "2d8",
+        "speed": {
+          "walk": 30
+        },
+        "strength": 11,
+        "dexterity": 12,
+        "constitution": 10,
+        "intelligence": 10,
+        "wisdom": 11,
+        "charisma": 10,
+        "strength_save": null,
+        "dexterity_save": null,
+        "constitution_save": null,
+        "intelligence_save": null,
+        "wisdom_save": null,
+        "charisma_save": null,
+        "perception": null,
+        "skills": {
+          "deception": 2,
+          "religion": 2
+        },
+        "damage_vulnerabilities": "",
+        "damage_resistances": "",
+        "damage_immunities": "",
+        "condition_immunities": "",
+        "senses": "passive Perception 10",
+        "languages": "any one language (usually Common)",
+        "challenge_rating": "1/8",
+        "cr": 0.125,
+        "actions": [
+          {
+            "name": "Scimitar",
+            "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one creature. Hit: 4 (1d6 + 1) slashing damage.",
+            "attack_bonus": 3,
+            "damage_dice": "1d6",
+            "damage_bonus": 1
+          }
+        ],
+        "bonus_actions": null,
+        "reactions": null,
+        "legendary_desc": "",
+        "legendary_actions": null,
+        "special_abilities": [
+          {
+            "name": "Dark Devotion",
+            "desc": "The cultist has advantage on saving throws against being charmed or frightened."
+          }
+        ],
+        "spell_list": [],
+        "page_no": 398,
+        "environments": [
+          "Temple",
+          "Desert",
+          "Urban",
+          "Sewer",
+          "Forest",
+          "Ruin",
+          "Jungle",
+          "Hills",
+          "Settlement"
+        ],
+        "img_main": null,
+        "document__slug": "wotc-srd",
+        "document__title": "5e Core Rules",
+        "document__license_url": "http://open5e.com/legal",
+        "document__url": "http://dnd.wizards.com/articles/features/systems-reference-document-srd",
+        "v2_converted_path": "/v2/creatures/srd_cultist/"
+      },
+      "parsed_stats": {
+        "name": "Cultist",
+        "max_hp": 9,
+        "hp_dice": "2d8",
+        "ac": 12,
+        "dex_modifier": 1,
+        "initiative": 2,
+        "cr": "1/8",
+        "size": "Medium",
+        "type": "Humanoid",
+        "notes": "Medium Humanoid, any non-good alignment\nCR: 1/8\nSpeed: walk: 30\n\nSpecial Abilities:\n\u2022 Dark Devotion: The cultist has advantage on saving throws against being charmed or frightened.\n\nActions:\n\u2022 Scimitar: Melee Weapon Attack: +3 to hit, reach 5 ft., one creature. Hit: 4 (1d6 + 1) slashing damage.",
+        "full_data": {
+          "slug": "cultist",
+          "desc": "**Cultists** swear allegiance to dark powers such as elemental princes, demon lords, or archdevils. Most conceal their loyalties to avoid being ostracized, imprisoned, or executed for their beliefs. Unlike evil acolytes, cultists often show signs of insanity in their beliefs and practices.",
+          "name": "Cultist",
+          "size": "Medium",
+          "type": "Humanoid",
+          "subtype": "any race",
+          "group": "NPCs",
+          "alignment": "any non-good alignment",
+          "armor_class": 12,
+          "armor_desc": "leather armor",
+          "hit_points": 9,
+          "hit_dice": "2d8",
+          "speed": {
+            "walk": 30
+          },
+          "strength": 11,
+          "dexterity": 12,
+          "constitution": 10,
+          "intelligence": 10,
+          "wisdom": 11,
+          "charisma": 10,
+          "strength_save": null,
+          "dexterity_save": null,
+          "constitution_save": null,
+          "intelligence_save": null,
+          "wisdom_save": null,
+          "charisma_save": null,
+          "perception": null,
+          "skills": {
+            "deception": 2,
+            "religion": 2
+          },
+          "damage_vulnerabilities": "",
+          "damage_resistances": "",
+          "damage_immunities": "",
+          "condition_immunities": "",
+          "senses": "passive Perception 10",
+          "languages": "any one language (usually Common)",
+          "challenge_rating": "1/8",
+          "cr": 0.125,
+          "actions": [
+            {
+              "name": "Scimitar",
+              "desc": "Melee Weapon Attack: +3 to hit, reach 5 ft., one creature. Hit: 4 (1d6 + 1) slashing damage.",
+              "attack_bonus": 3,
+              "damage_dice": "1d6",
+              "damage_bonus": 1
+            }
+          ],
+          "bonus_actions": null,
+          "reactions": null,
+          "legendary_desc": "",
+          "legendary_actions": null,
+          "special_abilities": [
+            {
+              "name": "Dark Devotion",
+              "desc": "The cultist has advantage on saving throws against being charmed or frightened."
+            }
+          ],
+          "spell_list": [],
+          "page_no": 398,
+          "environments": [
+            "Temple",
+            "Desert",
+            "Urban",
+            "Sewer",
+            "Forest",
+            "Ruin",
+            "Jungle",
+            "Hills",
+            "Settlement"
+          ],
+          "img_main": null,
+          "document__slug": "wotc-srd",
+          "document__title": "5e Core Rules",
+          "document__license_url": "http://open5e.com/legal",
+          "document__url": "http://dnd.wizards.com/articles/features/systems-reference-document-srd",
+          "v2_converted_path": "/v2/creatures/srd_cultist/"
+        }
+      },
+      "saved_at": "2026-01-04T18:47:08.839979"
+    },
+    "05305e3a1d28bf9276547d89128a2f32": {
+      "name": "Gold Dragon Wyrmling",
+      "source": "wotc-srd",
+      "source_title": "5e Core Rules",
+      "raw_data": {
+        "slug": "gold-dragon-wyrmling",
+        "desc": "",
+        "name": "Gold Dragon Wyrmling",
+        "size": "Medium",
+        "type": "Dragon",
+        "subtype": "",
+        "group": "Gold Dragon",
+        "alignment": "lawful good",
+        "armor_class": 17,
+        "armor_desc": "natural armor",
+        "hit_points": 60,
+        "hit_dice": "8d8+24",
+        "speed": {
+          "walk": 30,
+          "fly": 60,
+          "swim": 30
+        },
+        "strength": 19,
+        "dexterity": 14,
+        "constitution": 17,
+        "intelligence": 14,
+        "wisdom": 11,
+        "charisma": 16,
+        "strength_save": null,
+        "dexterity_save": 4,
+        "constitution_save": 5,
+        "intelligence_save": null,
+        "wisdom_save": 2,
+        "charisma_save": 5,
+        "perception": 4,
+        "skills": {
+          "perception": 4,
+          "stealth": 4
+        },
+        "damage_vulnerabilities": "",
+        "damage_resistances": "",
+        "damage_immunities": "fire",
+        "condition_immunities": "",
+        "senses": "blindsight 10 ft., darkvision 60 ft., passive Perception 14",
+        "languages": "Draconic",
+        "challenge_rating": "3",
+        "cr": 3.0,
+        "actions": [
+          {
+            "name": "Bite",
+            "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 9 (1d10 + 4) piercing damage.",
+            "attack_bonus": 6,
+            "damage_dice": "1d10",
+            "damage_bonus": 4
+          },
+          {
+            "name": "Breath Weapons (Recharge 5-6)",
+            "desc": "The dragon uses one of the following breath weapons.\n**Fire Breath.** The dragon exhales fire in a 15-foot cone. Each creature in that area must make a DC 13 Dexterity saving throw, taking 22 (4d10) fire damage on a failed save, or half as much damage on a successful one.\n**Weakening Breath.** The dragon exhales gas in a 15-foot cone. Each creature in that area must succeed on a DC 13 Strength saving throw or have disadvantage on Strength-based attack rolls, Strength checks, and Strength saving throws for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
+            "attack_bonus": 0,
+            "damage_dice": "4d10"
+          }
+        ],
+        "bonus_actions": null,
+        "reactions": null,
+        "legendary_desc": "",
+        "legendary_actions": null,
+        "special_abilities": [
+          {
+            "name": "Amphibious",
+            "desc": "The dragon can breathe air and water."
+          }
+        ],
+        "spell_list": [],
+        "page_no": 300,
+        "environments": [
+          "Grassland",
+          "Astral Plane",
+          "Ruin",
+          "Water"
+        ],
+        "img_main": null,
+        "document__slug": "wotc-srd",
+        "document__title": "5e Core Rules",
+        "document__license_url": "http://open5e.com/legal",
+        "document__url": "http://dnd.wizards.com/articles/features/systems-reference-document-srd",
+        "v2_converted_path": "/v2/creatures/srd_gold-dragon-wyrmling/"
+      },
+      "parsed_stats": {
+        "name": "Gold Dragon Wyrmling",
+        "max_hp": 60,
+        "hp_dice": "8d8+24",
+        "ac": 17,
+        "dex_modifier": 2,
+        "initiative": 16,
+        "cr": "3",
+        "size": "Medium",
+        "type": "Dragon",
+        "notes": "Medium Dragon, lawful good\nCR: 3\nSpeed: walk: 30, fly: 60, swim: 30\n\nSpecial Abilities:\n\u2022 Amphibious: The dragon can breathe air and water.\n\nActions:\n\u2022 Bite: Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 9 (1d10 + 4) piercing damage.\n\u2022 Breath Weapons (Recharge 5-6): The dragon uses one of the following breath weapons.\n**Fire Breath.** The dragon exhales fire in ...",
+        "full_data": {
+          "slug": "gold-dragon-wyrmling",
+          "desc": "",
+          "name": "Gold Dragon Wyrmling",
+          "size": "Medium",
+          "type": "Dragon",
+          "subtype": "",
+          "group": "Gold Dragon",
+          "alignment": "lawful good",
+          "armor_class": 17,
+          "armor_desc": "natural armor",
+          "hit_points": 60,
+          "hit_dice": "8d8+24",
+          "speed": {
+            "walk": 30,
+            "fly": 60,
+            "swim": 30
+          },
+          "strength": 19,
+          "dexterity": 14,
+          "constitution": 17,
+          "intelligence": 14,
+          "wisdom": 11,
+          "charisma": 16,
+          "strength_save": null,
+          "dexterity_save": 4,
+          "constitution_save": 5,
+          "intelligence_save": null,
+          "wisdom_save": 2,
+          "charisma_save": 5,
+          "perception": 4,
+          "skills": {
+            "perception": 4,
+            "stealth": 4
+          },
+          "damage_vulnerabilities": "",
+          "damage_resistances": "",
+          "damage_immunities": "fire",
+          "condition_immunities": "",
+          "senses": "blindsight 10 ft., darkvision 60 ft., passive Perception 14",
+          "languages": "Draconic",
+          "challenge_rating": "3",
+          "cr": 3.0,
+          "actions": [
+            {
+              "name": "Bite",
+              "desc": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 9 (1d10 + 4) piercing damage.",
+              "attack_bonus": 6,
+              "damage_dice": "1d10",
+              "damage_bonus": 4
+            },
+            {
+              "name": "Breath Weapons (Recharge 5-6)",
+              "desc": "The dragon uses one of the following breath weapons.\n**Fire Breath.** The dragon exhales fire in a 15-foot cone. Each creature in that area must make a DC 13 Dexterity saving throw, taking 22 (4d10) fire damage on a failed save, or half as much damage on a successful one.\n**Weakening Breath.** The dragon exhales gas in a 15-foot cone. Each creature in that area must succeed on a DC 13 Strength saving throw or have disadvantage on Strength-based attack rolls, Strength checks, and Strength saving throws for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
+              "attack_bonus": 0,
+              "damage_dice": "4d10"
+            }
+          ],
+          "bonus_actions": null,
+          "reactions": null,
+          "legendary_desc": "",
+          "legendary_actions": null,
+          "special_abilities": [
+            {
+              "name": "Amphibious",
+              "desc": "The dragon can breathe air and water."
+            }
+          ],
+          "spell_list": [],
+          "page_no": 300,
+          "environments": [
+            "Grassland",
+            "Astral Plane",
+            "Ruin",
+            "Water"
+          ],
+          "img_main": null,
+          "document__slug": "wotc-srd",
+          "document__title": "5e Core Rules",
+          "document__license_url": "http://open5e.com/legal",
+          "document__url": "http://dnd.wizards.com/articles/features/systems-reference-document-srd",
+          "v2_converted_path": "/v2/creatures/srd_gold-dragon-wyrmling/"
+        }
+      },
+      "saved_at": "2026-01-04T19:44:17.455000"
+    }
+  },
+  "export_timestamp": "2026-01-04T19:46:22.228070",
+  "version": "1.0"
+}

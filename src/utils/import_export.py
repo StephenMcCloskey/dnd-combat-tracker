@@ -1,10 +1,14 @@
-# src/utils/import_export.py (COMPLETE UPDATED VERSION)
+# src/utils/import_export.py
+"""JSON export/import functionality for combat state, rosters, and libraries."""
+
 import json
 import streamlit as st
 from datetime import datetime
+from src.config import EXPORT_VERSION, ROSTER_VERSION, LIBRARY_VERSION
 
-def export_combat_state():
-    """Export current combat state to JSON"""
+
+def export_combat_state() -> str:
+    """Export current combat state to JSON string."""
     state = {
         'combatants': st.session_state.combatants,
         'current_turn_index': st.session_state.current_turn_index,
@@ -12,12 +16,17 @@ def export_combat_state():
         'combat_active': st.session_state.combat_active,
         'combat_log': st.session_state.combat_log,
         'export_timestamp': datetime.now().isoformat(),
-        'version': '3.0'
+        'version': EXPORT_VERSION,
     }
     return json.dumps(state, indent=2)
 
-def import_combat_state(json_str):
-    """Import combat state from JSON"""
+
+def import_combat_state(json_str: str) -> tuple[bool, str]:
+    """Import combat state from JSON string.
+    
+    Returns:
+        Tuple of (success, message)
+    """
     try:
         state = json.loads(json_str)
         
@@ -39,25 +48,32 @@ def import_combat_state(json_str):
     except Exception as e:
         return False, f"Error loading combat state: {str(e)}"
 
-def get_export_filename():
-    """Generate a filename for export"""
+
+def get_export_filename() -> str:
+    """Generate a filename for combat export."""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     return f"dnd_combat_{timestamp}.json"
 
-def export_monster_library():
-    """Export saved monsters to JSON"""
+
+def export_monster_library() -> str:
+    """Export saved monsters to JSON string."""
     if 'saved_monsters' not in st.session_state:
         st.session_state.saved_monsters = {}
     
     library = {
         'monsters': st.session_state.saved_monsters,
         'export_timestamp': datetime.now().isoformat(),
-        'version': '1.0'
+        'version': LIBRARY_VERSION,
     }
     return json.dumps(library, indent=2)
 
-def import_monster_library(json_str):
-    """Import monster library from JSON"""
+
+def import_monster_library(json_str: str) -> tuple[bool, str]:
+    """Import monster library from JSON string.
+    
+    Returns:
+        Tuple of (success, message)
+    """
     try:
         library = json.loads(json_str)
         
@@ -81,25 +97,32 @@ def import_monster_library(json_str):
     except Exception as e:
         return False, f"Error importing library: {str(e)}"
 
-def get_monster_library_filename():
-    """Generate a filename for monster library export"""
+
+def get_monster_library_filename() -> str:
+    """Generate a filename for monster library export."""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     return f"dnd_monsters_{timestamp}.json"
 
-def export_player_roster_data():
-    """Export player roster to JSON string"""
+
+def export_player_roster_data() -> str:
+    """Export player roster to JSON string."""
     if 'player_roster' not in st.session_state:
         st.session_state.player_roster = {}
     
     roster = {
         'players': st.session_state.player_roster,
         'export_timestamp': datetime.now().isoformat(),
-        'version': '1.0'
+        'version': ROSTER_VERSION,
     }
     return json.dumps(roster, indent=2)
 
-def import_player_roster_data(json_str):
-    """Import player roster from JSON string"""
+
+def import_player_roster_data(json_str: str) -> tuple[bool, str]:
+    """Import player roster from JSON string.
+    
+    Returns:
+        Tuple of (success, message)
+    """
     try:
         roster = json.loads(json_str)
         
@@ -123,7 +146,8 @@ def import_player_roster_data(json_str):
     except Exception as e:
         return False, f"Error importing roster: {str(e)}"
 
-def get_player_roster_filename():
-    """Generate a filename for player roster export"""
+
+def get_player_roster_filename() -> str:
+    """Generate a filename for player roster export."""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     return f"dnd_players_{timestamp}.json"

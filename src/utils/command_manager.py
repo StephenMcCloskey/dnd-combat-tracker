@@ -1,18 +1,21 @@
 # src/utils/command_manager.py
+"""Command execution and undo/redo management."""
+
 import streamlit as st
 from src.utils.command_stack import Command
+from src.config import MAX_COMMAND_HISTORY
 
-MAX_COMMAND_HISTORY = 50
 
 def initialize_command_stack():
-    """Initialize command stack in session state"""
+    """Initialize command stack in session state."""
     if 'command_stack' not in st.session_state:
         st.session_state.command_stack = []
     if 'command_stack_position' not in st.session_state:
         st.session_state.command_stack_position = -1
 
+
 def execute_command(command: Command) -> None:
-    """Execute a command and add it to the undo stack"""
+    """Execute a command and add it to the undo stack."""
     initialize_command_stack()
     
     # Execute the command
@@ -37,6 +40,7 @@ def execute_command(command: Command) -> None:
         st.session_state.combat_log = []
     st.session_state.combat_log.append(command.description())
 
+
 def undo_last_command() -> bool:
     """Undo the last command. Returns True if successful."""
     initialize_command_stack()
@@ -52,6 +56,7 @@ def undo_last_command() -> bool:
     st.session_state.combat_log.append(f"⏪ UNDO: {command.description()}")
     
     return True
+
 
 def redo_last_command() -> bool:
     """Redo the last undone command. Returns True if successful."""
@@ -69,23 +74,27 @@ def redo_last_command() -> bool:
     
     return True
 
+
 def can_undo() -> bool:
-    """Check if undo is available"""
+    """Check if undo is available."""
     initialize_command_stack()
     return st.session_state.command_stack_position >= 0
 
+
 def can_redo() -> bool:
-    """Check if redo is available"""
+    """Check if redo is available."""
     initialize_command_stack()
     return st.session_state.command_stack_position < len(st.session_state.command_stack) - 1
 
+
 def get_command_history() -> list[tuple[str, str]]:
-    """Get list of (description, technical_description) tuples for display"""
+    """Get list of (description, technical_description) tuples for display."""
     initialize_command_stack()
     return [(cmd.description(), cmd.technical_description()) for cmd in st.session_state.command_stack]
 
+
 def clear_command_stack():
-    """Clear the command stack (call when combat ends)"""
+    """Clear the command stack (call when combat ends)."""
     if 'command_stack' in st.session_state:
         st.session_state.command_stack = []
     if 'command_stack_position' in st.session_state:

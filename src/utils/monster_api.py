@@ -1,21 +1,20 @@
+# src/utils/monster_api.py
+"""Open5e API integration for monster search."""
+
 import requests
 import random
 from difflib import SequenceMatcher
+import streamlit as st
+from src.constants import MONSTER_SOURCES
+from src.config import API_TIMEOUT, MAX_SEARCH_RESULTS, OPEN5E_BASE_URL
 
-# Available sources in Open5e
-AVAILABLE_SOURCES = {
-    'wotc-srd': {'name': 'SRD (Official WotC)', 'icon': '📕', 'enabled_default': True},
-    'tob': {'name': 'Tome of Beasts', 'icon': '📘', 'enabled_default': False},
-    'tob2': {'name': 'Tome of Beasts 2', 'icon': '📘', 'enabled_default': False},
-    'tob3': {'name': 'Tome of Beasts 3', 'icon': '📘', 'enabled_default': False},
-    'cc': {'name': 'Creature Codex', 'icon': '📗', 'enabled_default': False},
-    'menagerie': {'name': 'Level Up: Monstrous Menagerie', 'icon': '📙', 'enabled_default': False},
-    'a5e-ag': {'name': 'Level Up: Adventurer\'s Guide', 'icon': '📙', 'enabled_default': False},
-}
+# Re-export for backward compatibility
+AVAILABLE_SOURCES = MONSTER_SOURCES
 
-def get_source_display(source_slug, source_title=None):
-    """Get display name and icon for a source"""
-    for slug, info in AVAILABLE_SOURCES.items():
+
+def get_source_display(source_slug: str, source_title: str = None) -> str:
+    """Get display name and icon for a source."""
+    for slug, info in MONSTER_SOURCES.items():
         if slug in source_slug:
             return f"{info['icon']} {info['name']}"
     
@@ -24,8 +23,9 @@ def get_source_display(source_slug, source_title=None):
         return f"📚 {source_title}"
     return f"📚 {source_slug}"
 
-def calculate_match_score(search_term, monster_name):
-    """Calculate relevance score for a monster name match"""
+
+def calculate_match_score(search_term: str, monster_name: str) -> float:
+    """Calculate relevance score for a monster name match."""
     search_lower = search_term.lower().strip()
     name_lower = monster_name.lower().strip()
     
@@ -55,15 +55,17 @@ def calculate_match_score(search_term, monster_name):
     # Final score
     return ratio * 500 - length_penalty * 50
 
-def search_monster(name, enabled_sources=None):
-    """Search for a monster by name using Open5e API
+
+def search_monster(name: str, enabled_sources: list[str] = None) -> tuple[list | None, str | None]:
+    """Search for a monster by name using Open5e API.
     
     Args:
         name: Monster name to search for
         enabled_sources: List of source slugs to include (None = all sources)
-    """
-    import streamlit as st
     
+    Returns:
+        Tuple of (results, error_message)
+    """
     # Initialize cache if it doesn't exist
     if 'monster_search_cache' not in st.session_state:
         st.session_state.monster_search_cache = {}
@@ -77,8 +79,8 @@ def search_monster(name, enabled_sources=None):
         return cached_results['results'], cached_results.get('error')
     
     try:
-        url = f"https://api.open5e.com/monsters/?search={name}"
-        response = requests.get(url, timeout=5)
+        url = f"{OPEN5E_BASE_URL}/monsters/?search={name}"
+        response = requests.get(url, timeout=API_TIMEOUT)
         response.raise_for_status()
         
         data = response.json()
@@ -121,8 +123,8 @@ def search_monster(name, enabled_sources=None):
         # Sort by score (highest first)
         scored_results.sort(key=lambda x: x[0], reverse=True)
         
-        # Return top 10 most relevant results
-        top_results = [monster for score, monster in scored_results[:10]]
+        # Return top results
+        top_results = [monster for score, monster in scored_results[:MAX_SEARCH_RESULTS]]
         
         # Cache the successful results
         st.session_state.monster_search_cache[cache_key] = {
@@ -134,26 +136,27 @@ def search_monster(name, enabled_sources=None):
         
     except requests.Timeout:
         error_msg = "Request timed out. Please try again."
-        # Don't cache timeout errors
         return None, error_msg
     except requests.RequestException as e:
         error_msg = f"Error connecting to API: {str(e)}"
-        # Don't cache connection errors
         return None, error_msg
     except Exception as e:
         error_msg = f"Unexpected error: {str(e)}"
-        # Don't cache unexpected errors
         return None, error_msg
 
+
 def clear_monster_cache():
-    """Clear the monster search cache"""
-    import streamlit as st
+    """Clear the monster search cache."""
     if 'monster_search_cache' in st.session_state:
         st.session_state.monster_search_cache = {}
 
-def get_cache_stats():
-    """Get statistics about the current cache"""
-    import streamlit as st
+
+def get_cache_stats() -> tuple[int, int]:
+    """Get statistics about the current cache.
+    
+    Returns:
+        Tuple of (total_searches, total_monsters)
+    """
     if 'monster_search_cache' not in st.session_state:
         return 0, 0
     
@@ -166,8 +169,9 @@ def get_cache_stats():
     
     return total_searches, total_monsters
 
-def parse_monster_stats(monster_data):
-    """Parse monster data from Open5e API into combatant format"""
+
+def parse_monster_stats(monster_data: dict) -> dict:
+    """Parse monster data from Open5e API into combatant format."""
     
     # Calculate DEX modifier from ability score
     dex_score = monster_data.get('dexterity', 10)
@@ -245,8 +249,9 @@ def parse_monster_stats(monster_data):
         'full_data': monster_data  # Keep full data for reference
     }
 
-def roll_hp_from_dice(hit_dice_str):
-    """Roll HP from hit dice string (e.g., '2d6+2')"""
+
+def roll_hp_from_dice(hit_dice_str: str) -> int | None:
+    """Roll HP from hit dice string (e.g., '2d6+2')."""
     try:
         import re
         

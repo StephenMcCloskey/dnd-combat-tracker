@@ -1,44 +1,79 @@
+# src/components/conditions_reference.py
+"""Quick reference guide for conditions and exhaustion."""
+
 import streamlit as st
+from src.constants import CONDITIONS, CONDITION_EFFECTS, EXHAUSTION_EFFECTS
+
 
 def render_conditions_reference():
-    """Render a quick reference guide for conditions"""
+    """Render the conditions and exhaustion reference as expandable sections."""
     
-    conditions_info = {
-        "Blinded": "• Can't see, auto-fails sight checks\n• Attacks have disadvantage\n• Attacks against have advantage",
-        "Charmed": "• Can't attack charmer\n• Charmer has advantage on social checks",
-        "Deafened": "• Can't hear, auto-fails hearing checks",
-        "Frightened": "• Disadvantage on checks/attacks while source in sight\n• Can't move closer to source",
-        "Grappled": "• Speed becomes 0\n• Ends if grappler incapacitated",
-        "Incapacitated": "• Can't take actions or reactions",
-        "Invisible": "• Impossible to see without special senses\n• Attacks have advantage\n• Attacks against have disadvantage",
-        "Paralyzed": "• Incapacitated, can't move or speak\n• Auto-fail STR/DEX saves\n• Attacks have advantage\n• Hits from within 5ft are crits",
-        "Petrified": "• Turned to stone, incapacitated\n• Can't move or speak\n• Auto-fail STR/DEX saves\n• Attacks have advantage\n• Resistance to all damage\n• Immune to poison/disease",
-        "Poisoned": "• Disadvantage on attacks and ability checks",
-        "Prone": "• Disadvantage on attacks\n• Melee attacks against have advantage\n• Ranged attacks against have disadvantage\n• Costs half movement to stand",
-        "Restrained": "• Speed becomes 0\n• Attacks have disadvantage\n• Attacks against have advantage\n• Disadvantage on DEX saves",
-        "Stunned": "• Incapacitated, can't move\n• Can speak only falteringly\n• Auto-fail STR/DEX saves\n• Attacks have advantage",
-        "Unconscious": "• Incapacitated, can't move/speak\n• Unaware of surroundings\n• Drops held items, falls prone\n• Auto-fail STR/DEX saves\n• Attacks have advantage\n• Hits from within 5ft are crits"
-    }
+    # Two columns for conditions
+    col1, col2 = st.columns(2)
     
-    exhaustion_info = """
-**Level 1:** Disadvantage on ability checks
-**Level 2:** Speed halved
-**Level 3:** Disadvantage on attack rolls and saving throws
-**Level 4:** HP maximum halved
-**Level 5:** Speed reduced to 0
-**Level 6:** Death
+    half = len(CONDITIONS) // 2
+    
+    with col1:
+        st.markdown("##### Conditions")
+        for condition in CONDITIONS[:half]:
+            with st.expander(condition):
+                _render_condition_effects(condition)
+    
+    with col2:
+        st.markdown("##### ​")  # Empty header for alignment (zero-width space)
+        for condition in CONDITIONS[half:]:
+            with st.expander(condition):
+                _render_condition_effects(condition)
+    
+    st.divider()
+    
+    # Exhaustion section
+    st.markdown("##### Exhaustion")
+    
+    with st.expander("Exhaustion Levels", expanded=True):
+        for level, effect in EXHAUSTION_EFFECTS.items():
+            if level == 6:
+                st.markdown(f"**Level {level}:** :red[{effect}]")
+            else:
+                st.markdown(f"**Level {level}:** {effect}")
+        
+        st.caption("*Effects are cumulative. Long rest removes 1 level (with food/drink).*")
 
-*Effects are cumulative. Long rest removes 1 level (with food/drink).*
-"""
+
+def _render_condition_effects(condition: str) -> None:
+    """Render the effects of a condition as a bulleted list."""
+    effects_text = CONDITION_EFFECTS.get(condition, "No description")
+    
+    # Split by bullet points and render each on its own line
+    lines = effects_text.split("\n")
+    for line in lines:
+        line = line.strip()
+        if line:
+            # Convert • to markdown bullet
+            if line.startswith("•"):
+                st.markdown(f"- {line[1:].strip()}")
+            else:
+                st.markdown(line)
+
+
+def render_conditions_reference_compact():
+    """Render a compact version wrapped in a single expander."""
     
     with st.expander("📖 Conditions Quick Reference"):
         tab1, tab2 = st.tabs(["Conditions", "Exhaustion"])
         
         with tab1:
-            for condition, effect in conditions_info.items():
+            for condition in CONDITIONS:
                 st.markdown(f"**{condition}**")
-                st.text(effect)
+                _render_condition_effects(condition)
                 st.markdown("")
         
         with tab2:
-            st.markdown(exhaustion_info)
+            for level, effect in EXHAUSTION_EFFECTS.items():
+                st.markdown(f"**Level {level}:** {effect}")
+            st.caption("*Effects are cumulative. Long rest removes 1 level (with food/drink).*")
+
+
+def render_condition_tooltip(condition: str) -> str:
+    """Get tooltip text for a condition."""
+    return CONDITION_EFFECTS.get(condition, "Unknown condition")

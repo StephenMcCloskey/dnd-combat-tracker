@@ -11,14 +11,15 @@ This is a comprehensive combat tracker designed for D&D 5.5e that helps Dungeon 
 ### Core Combat Management
 - **Initiative Tracking**: Automatic sorting by initiative and DEX modifier
 - **Turn Management**: Header-based navigation with Previous/Next buttons always visible
+- **Smart Turn Skipping**: Monsters at 0 HP are automatically skipped; players at 0 HP get death save prompts
 - **Undo/Redo System**: Full command history with 50-command buffer
-  - Undo button (⏪) in header with Ctrl+Z shortcut
-  - Redo button (⏩) in header with Ctrl+Shift+Z shortcut
+  - Undo button (↩) in header with Ctrl+Z shortcut
+  - Redo button (↪) in header with Ctrl+Shift+Z shortcut
   - Command history viewer shows all actions with technical details
   - All actions are undoable: damage, healing, conditions, turn changes, adding/removing combatants
 - **Round Counter**: Tracks combat rounds with prominent display in header
 - **HP Management**: Damage, healing, and temporary HP tracking (all undoable)
-- **Death Saving Throws**: Full tracking with success/failure counters and stabilization
+- **Death Saving Throws**: Full tracking with success/failure counters, stabilization, and prominent prompts
 - **Combat Confirmation**: Safety check before ending combat to prevent accidental data loss
 - **Command Log**: Separate human-readable log and technical command history
 
@@ -78,7 +79,7 @@ This is a comprehensive combat tracker designed for D&D 5.5e that helps Dungeon 
   - Manual save/load with custom names
   - Export/Import library as JSON
 - **Bulk Add**: Add multiple instances of same monster (e.g., 5 goblins)
-- **Initiative Roller**: Auto-roll d20 + DEX for each monster
+- **Initiative Options**: Auto-roll or shared initiative for groups
 - **HP Options**: Use average HP or roll from hit dice
 - **Auto-populate**: Name, HP, AC, DEX mod, speed, CR, type, size, notes with abilities/actions
 
@@ -96,8 +97,7 @@ This is a comprehensive combat tracker designed for D&D 5.5e that helps Dungeon 
 - **View Modes**: Three layout options for different needs
   - 📋 **Detailed**: Full controls and information (best for setup/management)
   - 📊 **Compact**: Horizontal stats, quick actions (default, best for active combat)
-  - 📉 **Dense**: Ultra-compact with 2-column layout (best for large encounters 8+ combatants)
-- **Smart Layout**: Two-column display in dense mode with 4+ combatants
+  - 📉 **Dense**: Ultra-compact with expandable details (best for large encounters 8+ combatants)
 - **Responsive Design**: Adapts to sidebar open/closed state
 - **Quick Actions**: 
   - Toggle Prone/Stand Up
@@ -105,8 +105,12 @@ This is a comprehensive combat tracker designed for D&D 5.5e that helps Dungeon 
   - Full Heal (restores HP and clears conditions)
   - Clear All Conditions
   - All actions are undoable
+- **Death Save Prompts**: Prominent UI when player at 0 HP has their turn
+  - d20 roller with natural 1/20 handling
+  - Manual entry option
+  - Visual success/failure tracking
 - **Initiative Roller**: Built-in d20 roller with DEX modifier for manual entry
-- **Combat Log**: Scrollable event history with adjustable height (100-500px)
+- **Combat Log**: Scrollable event history with adjustable height (100-600px)
   - Separate from command history
   - Shows human-readable action descriptions
   - Toggle to command history view (📋 button)
@@ -135,26 +139,27 @@ This is a comprehensive combat tracker designed for D&D 5.5e that helps Dungeon 
   - Load/delete buttons for each save
   - Sort by newest first
 - **Download/Upload**: Still supports downloading to computer for backup/sharing
-- **State Preservation**: Saves all combatants, HP, conditions, turn order, rounds, combat log, and command history
+- **State Preservation**: Saves all combatants, HP, conditions, turn order, rounds, combat log
 
 ### UI/UX
 - **Dark Fantasy Theme**: D&D-inspired color scheme with dark leather sidebar
+- **Modular CSS**: Styles organized into separate modules (main, sidebar, header, components)
 - **Responsive Layout**: Wide layout optimized for desktop use, adapts to sidebar state
-- **Header Controls**: Combat navigation always visible at top
-  - Undo/Redo (columns 1-2)
-  - Previous/Next turn (columns 3-4)
-  - Current turn indicator (column 5)
-  - End Combat/Confirm (columns 6-7)
-- **Three View Modes**: 
-  - Detailed (full information)
-  - Compact (balanced, default)
-  - Dense (maximum efficiency, 2-column layout)
+- **Sticky Header**: Combat controls always visible at top
+  - Undo/Redo buttons
+  - Previous/Next turn navigation
+  - Current turn indicator with death save warning
+  - End Combat with confirmation
+- **Tabbed Interface**: 
+  - ⚔️ Combat - Main combat view with combatant cards
+  - 👥 Players - Player character management
+  - 👹 Monsters - Monster search and library
+  - 📖 Reference - Conditions and exhaustion quick reference
+  - 💾 Save/Load - File management
+- **Three View Modes**: Detailed, Compact (default), Dense
 - **Visual Feedback**: Color-coded HP bars, status icons, and hover effects
-- **Intuitive Organization**: Sidebar for setup, header for combat, main area for details
-- **Readable Metrics**: High-contrast text on white background boxes
 - **Empty State**: Helpful welcome screen with clear next steps
 - **Overflow Handling**: Sidebar scrolls, text wraps properly, no horizontal overflow
-- **Keyboard Shortcuts**: Ctrl+Z (undo), Ctrl+Shift+Z (redo)
 
 ## Technical Stack
 
@@ -171,39 +176,56 @@ This is a comprehensive combat tracker designed for D&D 5.5e that helps Dungeon 
 
 ```
 dnd-combat-tracker/
-├── app.py                              # Main Streamlit application
+├── app.py                              # Main Streamlit application entry point
 ├── pyproject.toml                      # Project dependencies
 ├── uv.lock                             # Locked dependency versions
 ├── CLAUDE.md                           # This documentation file
+├── README.md                           # Project readme
 ├── .gitignore                          # Git ignore (includes data/)
 ├── data/                               # Local data storage (git-ignored)
 │   ├── combats/                        # Saved combat encounters
 │   ├── players/                        # Player rosters
-│   │   └── auto_roster.json           # Auto-saved roster
+│   │   └── auto_roster.json            # Auto-saved roster
 │   └── monsters/                       # Monster libraries
-│       └── auto_library.json          # Auto-saved library
+│       └── auto_library.json           # Auto-saved library
 └── src/
     ├── __init__.py
-    ├── components/
+    ├── config.py                       # Application configuration settings
+    ├── constants.py                    # D&D 5.5e game constants and reference data
+    ├── styles/                         # CSS styling modules
+    │   ├── __init__.py                 # apply_all_styles() function
+    │   ├── main.py                     # Main content area styles
+    │   ├── sidebar.py                  # Sidebar styles
+    │   ├── header.py                   # Sticky header styles
+    │   └── components.py               # Component-specific styles (cards, tabs, etc.)
+    ├── layouts/                        # Page layout modules
+    │   ├── __init__.py                 # Layout exports
+    │   ├── sticky_header.py            # Header with title, stats, and combat controls
+    │   ├── sidebar.py                  # Sidebar with combat log and tips
+    │   └── main_tabs.py                # Main tabbed content area (Combat/Players/Monsters/Reference/Save)
+    ├── components/                     # Reusable UI components
     │   ├── __init__.py
-    │   ├── add_combatant_form.py       # Manual combatant entry form
+    │   ├── add_combatant_form.py       # Manual combatant entry form (generic monsters)
+    │   ├── combat_controls.py          # Turn navigation and combat control buttons
+    │   ├── combat_log.py               # Combat log display with command history toggle
+    │   ├── combat_overview.py          # Combat statistics dashboard
     │   ├── combatant_card.py           # Individual combatant display (3 view modes)
-    │   ├── command_history.py          # Command history viewer
-    │   ├── conditions_reference.py     # Quick reference guide
+    │   ├── command_history.py          # Command history viewer with position indicator
+    │   ├── conditions_reference.py     # Quick reference guide for conditions/exhaustion
+    │   ├── death_save_prompt.py        # Prominent death save UI for unconscious players
     │   ├── monster_search.py           # Monster search & library UI
-    │   ├── player_character_form.py    # Player character management
-    │   ├── quick_actions.py            # Quick action buttons
-    │   └── save_load_manager.py        # Save/load UI with local files
-    └── utils/
+    │   ├── player_character_form.py    # Player character management (form, import, roster)
+    │   └── save_load_manager.py        # Save/load UI with local file management
+    └── utils/                          # Core logic and utilities
         ├── __init__.py
-        ├── models.py                   # TypedDict models (NEW)
-        ├── command_stack.py            # Command pattern base classes (NEW)
-        ├── commands.py                 # Specific command implementations (NEW)
-        ├── command_manager.py          # Command execution and undo/redo (NEW)
-        ├── combat.py                   # Core combat logic (uses commands)
-        ├── data_manager.py             # Local file management (NEW)
+        ├── models.py                   # TypedDict models (PlayerCombatant, MonsterCombatant)
+        ├── command_stack.py            # Command pattern base classes
+        ├── commands.py                 # Specific command implementations (all undoable actions)
+        ├── command_manager.py          # Command execution and undo/redo management
+        ├── combat.py                   # Core combat logic (public API wrapping commands)
+        ├── data_manager.py             # Local file management (save/load/delete)
         ├── import_export.py            # JSON export/import functionality
-        └── monster_api.py              # Open5e API integration
+        └── monster_api.py              # Open5e API integration with caching
 ```
 
 ## Architecture
@@ -237,38 +259,48 @@ The app uses a command pattern to enable full undo/redo functionality:
 **Command Flow:**
 ```
 User clicks "Apply 10 damage" button
+    ↓
 apply_damage(index=0, damage=10)
-  ↓
-Creates command
-cmd = ApplyDamageCommand(index=0, damage=10)
-  ↓
-Executes via manager
+    ↓
+Creates command: cmd = ApplyDamageCommand(index=0, damage=10)
+    ↓
 execute_command(cmd)
-  ↓
+    ↓
 Command captures state, modifies, captures again
-cmd.before_state = capture_state(['combatants'])
-... modify combatants ...
-cmd.after_state = capture_state(['combatants'])
-  ↓
+    ↓
 Adds to stack and log
-command_stack.append(cmd)
-combat_log.append(cmd.description())
 ```
 
 **Undo Flow:**
 ```
 User clicks "Undo" button
+    ↓
 undo_last_command()
-  ↓
+    ↓
 Gets command at current position
-cmd = command_stack[position]
-  ↓
-Restores previous state
-cmd.undo()  # restore_state(before_state)
-  ↓
+    ↓
+cmd.undo() restores before_state
+    ↓
 Moves position back
-position -= 1
 ```
+
+### Layout Architecture
+
+The app uses a modular layout system:
+
+1. **`app.py`** - Entry point, orchestrates layout rendering
+2. **`layouts/sticky_header.py`** - Always-visible header with combat controls
+3. **`layouts/sidebar.py`** - Combat log and tips
+4. **`layouts/main_tabs.py`** - Tabbed content area with view mode selection
+
+### Style Architecture
+
+CSS is modularized for maintainability:
+
+1. **`styles/main.py`** - App background, typography, buttons, inputs
+2. **`styles/sidebar.py`** - Sidebar theming and components
+3. **`styles/header.py`** - Sticky header and turn indicators
+4. **`styles/components.py`** - Cards, tabs, conditions, death saves
 
 ### Type System
 
@@ -293,59 +325,48 @@ MonsterCombatant(BaseCombatant):
 Combatant = PlayerCombatant | MonsterCombatant
 ```
 
-Benefits:
-- IDE autocomplete and type checking
-- Clear distinction between player and monster fields
-- Still JSON-serializable (just dicts)
-- No runtime overhead
+### Configuration
+
+**`config.py`** - Application settings:
+- Command system (MAX_COMMAND_HISTORY = 50)
+- UI defaults (DEFAULT_VIEW_MODE, COMBAT_LOG_HEIGHT)
+- API settings (OPEN5E_BASE_URL, API_TIMEOUT)
+- Combat limits (MAX_BULK_ADD, MAX_HP, etc.)
+- Page configuration (PAGE_TITLE, PAGE_ICON, PAGE_LAYOUT)
+
+**`constants.py`** - D&D 5.5e game data:
+- CONDITIONS list and CONDITION_EFFECTS descriptions
+- EXHAUSTION_EFFECTS by level
+- SIZES and SIZE_SPACE
+- PROFICIENCY_BY_LEVEL
+- MONSTER_SOURCES for Open5e
+- VIEW_MODES configuration
+- ICONS dictionary
 
 ### State Management
 
 **Session State Structure:**
 ```python
 st.session_state:
+  # Combat state
   - combatants: list[Combatant]           # All combatants in initiative order
   - current_turn_index: int               # Active combatant index
   - round_number: int                     # Current round
   - combat_active: bool                   # Is combat started?
   - combat_log: list[str]                 # Human-readable log
+  
+  # Command system
   - command_stack: list[Command]          # Command history (max 50)
   - command_stack_position: int           # Current position in stack
+  
+  # Persistent data
   - player_roster: dict[str, dict]        # Saved players
   - saved_monsters: dict[str, dict]       # Saved monsters
   - monster_search_cache: dict[str, dict] # API search cache
+  
+  # UI state
   - view_mode: str                        # 'detailed', 'compact', or 'dense'
-```
-
-**Data Flow:**
-1. User action in UI component
-2. Component calls function in `combat.py`
-3. Function creates and executes command
-4. Command modifies `st.session_state`
-5. Streamlit reruns, UI updates
-6. Auto-save triggers for roster/library changes
-
-### File Storage
-
-**Auto-Save Files:**
-- `data/players/auto_roster.json` - Saved on every roster change
-- `data/monsters/auto_library.json` - Saved on every library change
-- Loaded automatically on app startup
-
-**Manual Save Files:**
-- User-named files in respective directories
-- Timestamped if no name provided
-- Listed with modification times
-- Can be loaded/deleted from UI
-
-**File Format:**
-All files are JSON with structure:
-```json
-{
-  "players": { ... },      // or "combatants", "monsters"
-  "export_timestamp": "...",
-  "version": "1.0"
-}
+  - confirm_end_combat: bool              # End combat confirmation flag
 ```
 
 ## Installation & Setup
@@ -361,20 +382,7 @@ uv init
 # Add dependencies
 uv add streamlit requests
 
-# Create directory structure
-mkdir -p src/components src/utils
-touch src/__init__.py
-touch src/components/__init__.py
-touch src/utils/__init__.py
-
-# Create main app file
-touch app.py
-
-# Data directories will be created automatically
-# But you can create them manually if desired:
-mkdir -p data/combats data/players data/monsters
-
-# Copy source files into appropriate directories
+# Data directories will be created automatically on first run
 ```
 
 ## Running the Application
@@ -393,361 +401,114 @@ The app will open in your default browser at `http://localhost:8501`
 #### Adding Player Characters:
 
 **Method 1: Manual Form**
-1. In sidebar, find "👥 Player Characters" section (at top)
+1. Go to "👥 Players" tab
 2. Click "➕ Add Player" tab
-3. Fill in character details:
-   - Name, Class, Level
-   - Proficiency bonus (auto-suggested based on level)
-   - Max HP, AC, Speed
-   - DEX Modifier
-   - Check "Alert Feat" if character has it (adds proficiency to initiative)
-   - Add notes (features, attacks, abilities)
-4. Choose:
-   - "💾 Save to Roster" - Saves for future use (auto-saved)
-   - "➕ Add to Combat Now" - Adds immediately with rolled initiative
+3. Fill in character details
+4. Choose "💾 Save to Roster" or "➕ Add to Combat Now"
 
 **Method 2: Text Import**
 1. Click "📋 Import Text" tab
-2. Paste character data in simple format:
-   ```
-   Name: Character Name
-   Class: Barbarian
-   Level: 4
-   Proficiency: +2
-   Max HP: 46
-   AC: 17
-   Speed: 30
-   DEX Modifier: +2
-   ☑ Alert Feat
-   Initiative: +4
-   Notes:
-   Features and abilities here
-   Attacks go here
-   ```
-3. Click "👁 Preview" to verify parsing
-4. Click "💾 Import to Roster" to save
+2. Paste character data in simple format
+3. Click "👁 Preview" to verify
+4. Click "💾 Import to Roster"
 
 **Method 3: From Saved Roster**
 1. Click "👥 Player Roster" tab
-2. Find your saved player (auto-loaded on startup)
-3. Click "➕ Add to Combat"
-4. Initiative rolled automatically
+2. Click "➕ Add to Combat" on saved player
 
-#### Adding Monsters from API:
-1. In sidebar, click "👹 Quick Add Monster"
-2. Configure sources if desired (⚙️ Configure Sources & Cache)
-3. Search for monster name (e.g., "Goblin")
-4. Select from top 10 relevant results
-5. Configure options:
-   - Number to add (1-20)
-   - Use average HP or roll from dice
-   - Auto-roll initiative
-   - Include notes
-6. Click "➕ Add to Combat"
-7. Monster automatically saved to library (auto-saved)
+#### Adding Monsters:
 
-#### Adding from Saved Library:
-1. Click "📚 Saved Monsters" tab
-2. Find your saved monster (auto-loaded on startup)
-3. Set number to add
+**From API Search:**
+1. Go to "👹 Monsters" tab
+2. Search for monster name
+3. Configure options (number, HP, initiative)
 4. Click "➕ Add to Combat"
 
-#### Manual Entry:
-1. Scroll to manual form in sidebar
-2. Enter name, DEX mod, max HP, AC, speed
-3. Optional: CR, size, type
-4. Roll initiative or enter manually (🎲 button available)
-5. Click "➕ Add Combatant"
+**From Saved Library:**
+1. Click "📚 Saved Monsters" tab
+2. Click "➕ Add to Combat"
 
-### Starting Combat
-1. Once combatants added, click "▶️ Start Combat" in header
-2. Combatants automatically sorted by initiative
-3. Turn order established
-4. Command history begins tracking
+**Manual Entry:**
+1. Scroll to "📋 Quick Add (Generic)" section
+2. Fill in stats
+3. Click "➕ Add Combatant"
 
 ### During Combat
-1. Use header controls:
-   - "⏪ Undo" - Undo last action (Ctrl+Z)
-   - "⏩ Redo" - Redo last undone action (Ctrl+Shift+Z)
-   - "⬅️ Previous" - Go to previous turn
-   - "Next ➡️" - Advance to next turn
-   - Round/turn indicator shows current combatant
-2. **Choose your view mode:**
-   - **📋 Detailed** - Full controls, all features visible
-   - **📊 Compact** - Balanced view (default), quick damage/heal
-   - **📉 Dense** - Minimal cards, 2-column layout for large encounters
-3. Expand combatant cards to manage:
-   - Apply damage or healing (undoable)
-   - Set temporary HP (undoable)
-   - Add/remove conditions (undoable)
-   - Track death saves (undoable)
-   - Adjust exhaustion levels (undoable)
-   - Use quick actions (all undoable)
-   - Add notes
-4. Monitor Combat Overview Dashboard
-5. Check Combat Log for event history
-6. Toggle to Command History (📋 button) to see technical details
 
-### Using Undo/Redo
-- **Undo**: Click ⏪ button or press Ctrl+Z
-  - Reverts last action
-  - Can undo up to 50 actions
-  - Works for: damage, healing, conditions, turn changes, adding/removing combatants
-- **Redo**: Click ⏩ button or press Ctrl+Shift+Z
-  - Re-applies undone action
-  - Redo history cleared when new action taken
-- **View History**: Click 📋 checkbox next to Combat Log
-  - Shows all commands with position marker
-  - Undone commands shown as grayed out
-  - Expand for technical details
+1. Click "▶️ Start Combat" when ready
+2. Use header controls for turn navigation
+3. Choose view mode (Detailed/Compact/Dense)
+4. Expand combatant cards to manage HP, conditions, etc.
+5. Use Undo/Redo for mistakes
+6. Players at 0 HP get death save prompts on their turn
 
 ### Ending Combat
-1. Click "🛑 End Combat" in header
+
+1. Click "🛑 End" in header
 2. Click "✓ Confirm" to finalize
-3. All combatants cleared (saved monsters/players remain in libraries)
-4. Command history cleared
-
-### Managing Data
-
-#### Player Roster:
-- **Auto-Save**: Roster auto-saves to `data/players/auto_roster.json` on changes
-- **Auto-Load**: Roster auto-loads on app startup
-- **Manual Save**: Enter name and click 💾 Save in Save/Load Manager
-- **Load**: Select from saved rosters list, click 📂 Load
-- **Delete**: Click 🗑️ Delete on any saved roster
-- **Download**: Export to computer for backup/sharing
-- **Upload**: Import from computer
-- **Remove Player**: Delete individual players from roster
-
-#### Monster Library:
-- **Auto-Save**: Library auto-saves to `data/monsters/auto_library.json` on changes
-- **Auto-Load**: Library auto-loads on app startup
-- **Manual Save**: Enter name and click 💾 Save in Save/Load Manager
-- **Load**: Select from saved libraries list, click 📂 Load
-- **Delete**: Click 🗑️ Delete on any saved library
-- **Download**: Export to computer for backup/sharing
-- **Upload**: Import from computer
-- **Remove Monster**: Delete individual monsters from library
-
-#### Combat State:
-- **Save**: Enter name and click 💾 Save in Save/Load Manager (saves to `data/combats/`)
-- **Load**: Select from saved combats list, click 📂 Load
-- **Delete**: Click 🗑️ Delete on any saved combat
-- **Download**: Export to computer for backup/sharing
-- **Upload**: Import from computer
-- **Includes**: All combatants, HP, conditions, turn order, rounds, combat log, command history
-
-#### Search Cache:
-- **Toggle**: Enable/disable in Configure Sources & Cache
-- **View Stats**: See cached searches and monster count
-- **Clear**: Remove all cached searches
-
-#### Backing Up Data:
-The `data/` folder contains all your saved files:
-1. **Local Backup**: Copy entire `data/` folder to backup location
-2. **Share Between Computers**: 
-   - Export roster/library to download
-   - Move JSON file to other computer
-   - Upload in other instance
-3. **Version Control**: `data/` is git-ignored by default
-4. **Cloud Backup**: Sync `data/` folder with Dropbox/Google Drive/etc.
+3. Combat clears, saved data persists
 
 ## D&D 5.5e Rules Implemented
 
 ### Initiative
 - D20 + DEX modifier roll
-- Alert feat adds proficiency bonus to initiative (not flat +5)
-- Sorted highest to lowest
-- Ties broken by DEX modifier
-- Rolled once per combat
+- Alert feat adds proficiency bonus (not flat +5)
+- Sorted highest to lowest, ties by DEX
 - Auto-roll option for monsters and players
 
 ### Hit Points
 - Current HP / Max HP tracking
 - Temporary HP (consumed first, doesn't stack)
 - 0 HP = unconscious + death saves
-- Instant death if damage exceeds max HP
 - HP rolling from hit dice for monsters
-- Speed tracking (default 30ft)
 
 ### Death Saving Throws
 - 3 successes = stabilized
 - 3 failures = death
-- Critical hit within 5ft = 2 failures
 - Natural 20 = regain 1 HP
+- Natural 1 = 2 failures
 - Reset on healing
-- All changes undoable
 
-### Conditions
-- Full 5.5e condition list
-- Effects listed in quick reference
-- Multiple conditions can stack
-- Quick toggle for common conditions (Prone, Unconscious)
-- All condition changes undoable
-
-### Exhaustion
-- 6 levels with cumulative effects
+### Conditions & Exhaustion
+- Full 5.5e condition list with effects
+- 6 exhaustion levels (cumulative)
 - Level 6 = death
-- Long rest removes 1 level (with food/drink)
-- All effects displayed
-- All changes undoable
 
 ## Development Notes
 
-### Adding New Features
+### Adding New Undoable Actions
 
-**Adding a New Undoable Action:**
-1. Create command class in `src/utils/commands.py`:
-   ```python
-   class MyActionCommand(CombatCommand):
-       def __init__(self, param1, param2):
-           super().__init__()
-           self.param1 = param1
-           self.param2 = param2
-       
-       def execute(self):
-           self.before_state = self.capture_state(['relevant_keys'])
-           # Modify state
-           self.after_state = self.capture_state(['relevant_keys'])
-       
-       def undo(self):
-           self.restore_state(self.before_state)
-       
-       def description(self):
-           return "Human readable description"
-       
-       def technical_description(self):
-           return f"MyAction(param1={self.param1}, param2={self.param2})"
-   ```
+1. Create command class in `src/utils/commands.py`
+2. Add public function in `src/utils/combat.py`
+3. Use in components with `st.rerun()` after
 
-2. Add public function in `src/utils/combat.py`:
-   ```python
-   def my_action(param1, param2):
-       cmd = MyActionCommand(param1, param2)
-       execute_command(cmd)
-   ```
+### Adding New Components
 
-3. Use in components:
-   ```python
-   from src.utils.combat import my_action
-   
-   if st.button("Do Action"):
-       my_action(value1, value2)
-       st.rerun()
-   ```
-
-**Adding New Combatant Fields:**
-1. Update TypedDict in `src/utils/models.py`
-2. Update initialization in `add_player_combatant()` or `add_monster_combatant()`
-3. Update UI in `src/components/combatant_card.py`
-
-**Adding New Component:**
 1. Create file in `src/components/`
-2. Import combat functions (use lazy imports to avoid circular dependencies)
-3. Use `st.rerun()` after state changes
-4. Keep UI rendering separate from logic
+2. Import in layouts or other components as needed
+3. Use lazy imports to avoid circular dependencies
+
+### Avoiding Circular Imports
+
+Components should import from utils inside functions when needed:
+```python
+def _do_next():
+    from src.utils.combat import next_turn
+    next_turn()
+```
 
 ## Known Limitations
 
-### Technical
-- **Local storage only**: No database, files stored in `data/` folder
-- **No multi-user support**: Single DM per instance
-- **Session-based cache**: Search cache cleared on page refresh
-- **Desktop-focused layout**: Not optimized for mobile devices
-- **API-dependent**: Monster search requires internet for Open5e API
-- **SRD content only**: No proprietary monsters without manual entry
-- **50-command limit**: Command history capped at 50 actions
-- **No cloud sync**: Data doesn't sync across devices (by design)
-
-### Features
-- **No automated attack rolls**: Attack/damage rolls done externally
-- **No spell tracking**: Beyond notes field
-- **No lair/legendary actions UI**: Must track manually
-- **No automated concentration checks**: Manual tracking
-- **No multi-combat history**: One combat at a time
-- **No campaign management**: Combat-focused only
-- **No OCR**: Can't read character sheet images
-- **Text import**: Relies on specific formatting
-- **No class resources**: Spell slots, rage, ki must be tracked in notes
-- **No equipment system**: Weight/encumbrance not tracked
-
-### Performance
-- **Large combats**: 20+ combatants may slow UI
-- **Search cache**: Limited to session
-- **No pagination**: Search results show top 10 only
-- **Deepcopy overhead**: State capture uses memory for large combats
-
-## Troubleshooting
-
-### Undo/Redo Issues
-- **Undo button disabled**: No actions to undo (position at -1)
-- **Redo button disabled**: No actions to redo (position at end of stack)
-- **Undo doesn't work**: Command stack may be corrupted, restart app
-- **Lost history after combat end**: Expected behavior, stack clears on combat end
-- **Can't undo past 50 actions**: Stack limited to 50 commands
-
-### Player Character Issues
-- **Text import not parsing**: Check format matches example, ensure "Name:" and "Class:" fields present
-- **Initiative wrong**: Verify Alert feat checkbox matches character, check DEX modifier
-- **Missing notes**: Ensure "Notes:" line present, everything after becomes notes
-- **Can't save to roster**: Must have Name and Class at minimum
-- **Player disappeared**: Check auto-load worked, check `data/players/auto_roster.json` exists
-- **Roster not persisting**: Check `data/` folder permissions
-
-### Monster Search Issues
-- **"No monsters found"**: Check source filters, try broader search terms
-- **Timeout errors**: Check internet connection, try again
-- **Wrong results**: Disable cache to get fresh data
-- **Missing sources**: Enable desired sources in configuration
-- **Library not persisting**: Check `data/monsters/auto_library.json` exists
-
-### Combat Issues
-- **Can't start combat**: Ensure at least one combatant added
-- **Turn navigation not working**: Check if combat is active
-- **Combatants out of order**: Initiative sorted on combat start, not during
-- **Lost combatants**: Check if combat was ended (clears all)
-- **Undo not working after turn change**: Each turn change is a separate undoable action
-
-### Data Persistence
-- **Files not saving**: Check `data/` folder permissions, check disk space
-- **Auto-save not working**: Check `data/players/` and `data/monsters/` folders exist
-- **Can't find saved files**: Check you're in the right directory (data/combats/, data/players/, data/monsters/)
-- **Combat lost on refresh**: Expected - combats don't auto-save, must save manually
-- **Import not working**: Verify JSON file format and version
-- **Roster merge issues**: Import only adds new players, doesn't overwrite existing
-- **Lost all data**: Check if `data/` folder was deleted, restore from backup
-
-### UI Issues
-- **Metrics not visible**: Check browser dark mode, metrics have white backgrounds with borders
-- **Sidebar scrolling**: Sidebar scrolls vertically, content should not overflow
-- **Slow performance**: Reduce number of combatants, clear old logs, switch to dense view mode
-- **Cards too large**: Switch to Compact or Dense view mode
-- **Can't see all combatants**: Use Dense mode for two-column layout
-- **Text overflowing**: Sidebar has proper word-wrapping and overflow handling
-- **Keyboard shortcuts not working**: Ensure focus is on app, not browser controls
-
-### Circular Import Errors
-- **"cannot import name 'X'"**: Check for circular imports between components and utils
-- **Fix**: Use lazy imports (import inside functions) in component files
-- **Example**: Import combat functions inside button callbacks, not at module level
-
-## Credits
-
-- **Open5e API**: Free monster database (https://open5e.com)
-- **Streamlit**: Web framework
-- **D&D 5.5e (2024)**: Rules reference
+- Local storage only (no cloud sync)
+- Single DM per instance
+- Desktop-focused layout
+- API-dependent monster search
+- No automated attack/damage rolls
+- No spell slot tracking (use notes)
 
 ---
 
-**Version**: 3.0.0  
-**Last Updated**: January 2026  
+**Version**: 3.1.0  
+**Last Updated**: January 2025  
 **D&D Rules**: 5.5e (2024 PHB)  
-**API**: Open5e v1  
-**New in 3.0**: 
-- Complete command pattern with undo/redo
-- TypedDict models for type safety
-- Player/Monster type separation
-- Local file storage with auto-save/load
-- Command history viewer
-- Speed field for all combatants
-- 50-command history buffer
+**API**: Open5e v1

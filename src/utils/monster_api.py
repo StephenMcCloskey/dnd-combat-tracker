@@ -20,8 +20,8 @@ def get_source_display(source_slug: str, source_title: str = None) -> str:
     
     # Fallback to title if not in our list
     if source_title:
-        return f"📚 {source_title}"
-    return f"📚 {source_slug}"
+        return f"ðŸ“š {source_title}"
+    return f"ðŸ“š {source_slug}"
 
 
 def calculate_match_score(search_term: str, monster_name: str) -> float:
@@ -217,10 +217,7 @@ def parse_monster_stats(monster_data: dict) -> dict:
         for ability in special_abilities[:3]:
             name = ability.get('name', 'Unknown')
             desc = ability.get('desc', '')
-            # Truncate long descriptions
-            if len(desc) > 100:
-                desc = desc[:97] + "..."
-            notes_parts.append(f"• {name}: {desc}")
+            notes_parts.append(f"â€¢ {name}: {desc}")
     
     # Actions (first 2)
     actions = monster_data.get('actions', [])
@@ -229,9 +226,7 @@ def parse_monster_stats(monster_data: dict) -> dict:
         for action in actions[:2]:
             name = action.get('name', 'Unknown')
             desc = action.get('desc', '')
-            if len(desc) > 100:
-                desc = desc[:97] + "..."
-            notes_parts.append(f"• {name}: {desc}")
+            notes_parts.append(f"â€¢ {name}: {desc}")
     
     notes = '\n'.join(notes_parts)
     

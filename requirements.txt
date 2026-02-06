@@ -1,0 +1,5 @@
+# D&D 5.5e Combat Tracker - Requirements
+# Python 3.13+ required
+
+streamlit>=1.52.2
+requests>=2.32.5
